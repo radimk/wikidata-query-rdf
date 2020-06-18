@@ -346,6 +346,11 @@ public class RecentChangesPoller implements Change.Source<RecentChangesPoller.Ba
             // Does not matter if the change matters for us or not, it
             // still advances the time since we've seen it.
             nextStartTime = Utils.max(nextStartTime, rc.getTimestamp());
+            // log.debug("processing recent change:  {}, {}, {} (wikibase {})", rc.getRcId(), rc.getRevId(), rc.getNs(), wikibase);
+            if (rc.getType().equals("log") && rc.getRevId() == null && rc.getNs() == null) {
+                log.info("Skipping log change event without Ns and RevId:  {}", rc.getRcId());
+                continue;
+            }
             if (!wikibase.isEntityNamespace(rc.getNs())) {
                 log.info("Skipping change in irrelevant namespace:  {}", rc);
                 continue;
